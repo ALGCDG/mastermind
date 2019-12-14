@@ -30,7 +30,26 @@ public class mastermind
 
     public feedback compare_codes(String code1, String code2)
     {
-
+        int black_hits = 0;
+        int white_hits = 0;
+        for (int i = 0; i < code1.length() ; i++)
+        {
+            if (code1.charAt(i) == code2.charAt(i))
+            {
+                black_hits++;
+            }
+            else 
+            {
+                for (int j = 0; j < code2.length() ; j++)
+                {
+                    if (code1.charAt(i) == code2.charAt(j))
+                    {
+                        white_hits++;
+                    }
+                }
+            }
+        }
+        return new feedback(white_hits, black_hits);
     }
 
     public class master extends player
@@ -67,8 +86,9 @@ public class mastermind
         }
         public void learn(feedback f)
         {
-            guess_set = new HashSet<String>();
-            guess_set = guess_set.stream().filter(x -> compare_codes(x,guess_set.iterator().next()) == f).collect(Collectors.toSet());
+            // guess_set = new HashSet<String>();
+            // guess_set = guess_set.stream().filter(x -> compare_codes(x,guess_set.iterator().next()) == f).collect(Collectors.toSet());
+            guess_set.removeIf(x -> compare_codes(x,guess_set.iterator().next()) == f);
         }
     }
 
@@ -93,10 +113,13 @@ public class mastermind
 
     public static void main(String[] args)
     {
-        master ma = new master("Archie");
-        mind mi = new mind("George");
-        mi.learn(ma.evaluate_guess(mi.make_guess()));
-        System.out.println(mi.guess_set.size());
+        master ma = master("Archie");
+        // mind mi = new mind("George");
+        // Set a = new HashSet<int>();
+        var set = new HashSet<String>();
+
+        // mi.learn(ma.evaluate_guess(mi.make_guess()));
+        // System.out.println(mi.guess_set.size());
 
         // var c = generate_combinations("", 6);
         // System.out.println(c);
