@@ -49,18 +49,11 @@ class feedback
                 difference2.put(k2, v2);
             }
         }
-        // System.out.println("black hits found");
-
         for (var k : difference1.keySet())
         {
-            // System.out.println(k);
-            // System.out.println(difference1.get(k));
-            // System.out.println(difference2.get(k));
             var w = difference2.containsKey(k) ? Math.min(difference1.get(k), difference2.get(k)) : 0 ;
             white_hits += w;
         }
-        // System.out.println("done");
-
         return new feedback(white_hits, black_hits);
     }
 }
@@ -77,7 +70,7 @@ class master extends player
         code = "";
         for (int i = 0 ; i < code_length; i++)
         {
-            code += (r.nextInt(number_of_symbols)+1);
+            code += Integer.toHexString(r.nextInt(number_of_symbols)+1);
         }
     }
     public feedback evaluate_guess(String guess)
@@ -101,17 +94,8 @@ class mind extends player
     }
     public void learn(feedback f)
     {
-        // guess_set = new HashSet<String>();
-        // guess_set = guess_set.stream().filter(x -> compare_codes(x,guess_set.iterator().next()) == f).collect(Collectors.toSet());
         String last_guess = guess_set.iterator().next();
         guess_set.removeIf(x -> !feedback.compare_codes(x, last_guess).equals(f));
-        // System.out.println("code " + last_guess + " produced feedback: " + f);
-        // for (var x : guess_set)
-        // {
-        //     var n = feedback.compare_codes(x, last_guess);
-        //     System.out.println(n + ", match? " + (f.equals(n)));
-            
-        // }
     }
 
     private static Set<String> generate_combinations(String input, int depth, int no_symbols)
@@ -121,7 +105,7 @@ class mind extends player
         {
             for (int i = 1 ; i <= no_symbols; i++)
             {
-                set.addAll(generate_combinations(input+i,depth,no_symbols));
+                set.addAll(generate_combinations(input+ Integer.toHexString(i),depth,no_symbols));
             }
         }
         else
@@ -144,39 +128,15 @@ public class mastermind
 
         master ma = new master("Archie", code_length, no_symbols);
         mind mi = new mind("George", code_length, no_symbols);
-        // System.out.println(mi.make_guess());
-        // System.out.println(ma.evaluate_guess(mi.make_guess()));
         feedback ideal = new feedback(0,code_length);
         feedback report;
-        // feedback result = new feedback();
         do
         {
             String guess = mi.make_guess();
             report = ma.evaluate_guess(guess);
             System.out.println("Mind " + mi.name + " guessed " + guess + ", Master " + ma.name + " responds with the feedback " + report);
             mi.learn(report);
-            // System.out.println(mi.guess_set.size());
         }
         while (!report.equals(ideal));
-
-        // var c = mind.generate_combinations("", 4, 6);
-        // System.out.println(c);
-        // System.out.println(c.size());
-        // System.out.println(c.iterator().next());
-
-        // var s = new HashSet<String>();
-        // for (int i = 0; i < 11;i++)
-        // {
-        //     s.add("" + i);
-        // }
-        // s.removeIf(i -> (Integer.parseInt(i) % 2) == 0);
-        // System.out.println(s);
-
-        // var a = new HashMap<Character, Integer>();
-        // a['a'] = 0;
-        // System.out.println(a['a']);
-
-
-
     }
 }
